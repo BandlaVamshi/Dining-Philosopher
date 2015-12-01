@@ -1,0 +1,283 @@
+import java.awt.EventQueue;
+import java.util.concurrent.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextArea;
+import java.awt.Color;
+
+public class ft extends JFrame 
+{
+    ExecutorService exec;
+    private JPanel contentPane;
+    
+    private JTextArea txtrThinking = new JTextArea();
+    private JTextArea txtrThinking_1 = new JTextArea();
+    private JTextArea txtrThinking_2 = new JTextArea();
+    private JTextArea txtrThinking_3 = new JTextArea();
+    private JTextArea txtrThinking_4 = new JTextArea();
+    private final JTextArea txtrPhil = new JTextArea();
+    private final JTextArea txtrPhil_4 = new JTextArea();
+    private final JTextArea txtrPhil_3 = new JTextArea();
+    private final JTextArea txtrPhil_2 = new JTextArea();
+    private final JTextArea txtrPhil_1 = new JTextArea();
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) 
+    {
+        EventQueue.invokeLater(new Runnable() 
+        {
+            public void run()
+            {    
+                try 
+                {
+                    ft frame = new ft();
+                    frame.setVisible(true);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public ft() 
+    {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 450, 300);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+        
+        JButton btnRun = new JButton("Run");
+        btnRun.setBackground(Color.GREEN);
+        btnRun.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
+                ft2 x = new ft2();
+            }
+        });
+        
+        btnRun.setBounds(71, 24, 89, 23);
+        contentPane.add(btnRun);
+        txtrThinking.setBackground(new Color(173, 255, 47));
+        
+    //    JTextArea textArea = new JTextArea();
+        txtrThinking.setBounds(154, 91, 89, 22);
+        contentPane.add(txtrThinking);
+        txtrThinking.setText(" Thinking");
+        txtrThinking_1.setBackground(new Color(100, 149, 237));
+        
+        //JTextArea textArea_1 = new JTextArea();
+        txtrThinking_1.setBounds(56, 155, 89, 22);
+        contentPane.add(txtrThinking_1);
+        txtrThinking_1.setText(" Thinking");
+        txtrThinking_2.setBackground(new Color(218, 112, 214));
+        
+        //JTextArea textArea_2 = new JTextArea();
+        txtrThinking_2.setBounds(88, 229, 89, 22);
+        contentPane.add(txtrThinking_2);
+        txtrThinking_2.setText(" Thinking");
+        txtrThinking_3.setBackground(new Color(144, 238, 144));
+        
+        //JTextArea textArea_3 = new JTextArea();
+        txtrThinking_3.setBounds(230, 229, 89, 22);
+        contentPane.add(txtrThinking_3);
+        txtrThinking_3.setText(" Thinking");
+        txtrThinking_4.setBackground(new Color(255, 140, 0));
+        
+    //    JTextArea textArea_4 = new JTextArea();
+        txtrThinking_4.setBounds(254, 155, 89, 22);
+        contentPane.add(txtrThinking_4);
+        txtrThinking_4.setText(" Thinking");
+        txtrPhil.setBackground(Color.MAGENTA);
+        txtrPhil.setText(" Phil - 1");
+        txtrPhil.setBounds(154, 58, 83, 22);
+        
+        contentPane.add(txtrPhil);
+        txtrPhil_4.setBackground(Color.PINK);
+        txtrPhil_4.setText(" Phil - 2");
+        txtrPhil_4.setBounds(62, 122, 83, 22);
+        
+        contentPane.add(txtrPhil_4);
+        txtrPhil_3.setBackground(Color.CYAN);
+        txtrPhil_3.setText(" Phil - 3");
+        txtrPhil_3.setBounds(88, 196, 83, 22);
+        
+        contentPane.add(txtrPhil_3);
+        txtrPhil_2.setBackground(new Color(173, 216, 230));
+        txtrPhil_2.setText(" Phil - 4");
+        txtrPhil_2.setBounds(230, 196, 83, 22);
+        
+        contentPane.add(txtrPhil_2);
+        txtrPhil_1.setBackground(new Color(152, 251, 152));
+        txtrPhil_1.setText(" Phil - 5");
+        txtrPhil_1.setBounds(254, 122, 83, 22);
+        
+        contentPane.add(txtrPhil_1);
+        
+        JButton btnStop = new JButton("Stop");
+        btnStop.setBackground(Color.RED);
+        btnStop.addActionListener(new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
+                exec.shutdownNow();
+            }
+        });
+        btnStop.setBounds(219, 24, 89, 23);
+        contentPane.add(btnStop);
+    }
+    
+    class Chopstick 
+    {
+        private boolean flag = false;
+        public synchronized void take(double idd, String x) throws InterruptedException 
+        {
+                while (flag) 
+                {
+                    //System.out.println("philosopher" + idd +" waiting for the" + x +"chopstick");
+                    wait();
+                }
+                flag = true;
+        }
+        
+        public synchronized void drop(double idd, String x) 
+        {
+            flag = false;
+            System.out.println("philosopher" + idd + " "+ "dropped the" + x +" chopstick");
+            notifyAll();
+        }
+    }
+    class Philosopher implements Runnable 
+    {
+//        private Thread t;
+        private Chopstick left;
+        private Chopstick right;
+        private final int id;
+        public double idd;
+        public int f;
+    
+        private void pause() throws InterruptedException 
+        {
+            try 
+            {
+                Thread.sleep(2000);                 //1000 milliseconds is one second.
+            }
+            catch(InterruptedException ex) 
+            {
+                Thread.currentThread().interrupt();
+            }
+        }
+        public Philosopher(Chopstick left, Chopstick right, int ident) 
+        {
+            this.left = left;
+            this.right = right;
+            id = ident;
+            idd=(double)id;
+            //this.f= 0;
+        }
+        
+        public void run() 
+        {
+            try 
+            {
+                while (!Thread.interrupted()) 
+                {
+
+                    pause();
+                    
+                    right.take(idd,"rig");
+                    left.take(idd,"lef");
+                    
+                    if(idd == 0.0)
+                        txtrThinking.setText("Eating");
+                    else if(idd == 1.0)
+                        txtrThinking_1.setText("Eating");
+                    else if(idd == 2.0)
+                        txtrThinking_2.setText("Eating");
+                    else if(idd == 3.0)
+                        txtrThinking_3.setText("Eating");
+                    else if(idd == 4.0)
+                        txtrThinking_4.setText("Eating");
+                    
+                    System.out.println("philosopher"+ idd + "eating");
+                    pause();
+                    
+                    right.drop(idd,"rig");
+                    left.drop(idd,"lef");
+                    
+                    if(idd == 0.0)
+                        txtrThinking.setText("Thinking");
+                    else if(idd == 1.0)
+                        txtrThinking_1.setText("Thinking");
+                    else if(idd == 2.0)
+                        txtrThinking_2.setText("Thinking");
+                    else if(idd == 3.0)
+                        txtrThinking_3.setText("Thinking");
+                    else if(idd == 4.0)
+                        txtrThinking_4.setText("Thinking");
+                    
+                }
+            } 
+            catch (InterruptedException e) 
+            {
+                System.out.println("philosopher" + idd + "exiting via interrupt");
+            }
+        }
+         // public void start(){
+         //    System.out.println("starting Thread " + idd);
+         //    System.out.println("Thread " + idd + "for philosopher " + idd);
+          //   if(t==null)
+           //  {
+           //     t= new Thread(this,id);
+             //   t.start();
+            // }
+        
+    //}
+    }
+    
+    class ft2
+    {
+        ft2()
+        {
+            int size = 5;
+            Chopstick[] sticks = new Chopstick[size];
+            exec = Executors.newCachedThreadPool();
+        
+            for (int i = 0; i < size; i++) 
+            {
+                sticks[i] = new Chopstick();
+            }
+            
+            for (int i = 0; i < size; i++) 
+            {
+                if (i < (size - 1)) 
+                {
+                    System.out.println("creating thread");
+                    exec.execute(new Philosopher(sticks[i], sticks[i + 1], i));
+                           // R1.start();
+                } 
+                else 
+                {
+                    System.out.println("creating thread");        
+                    exec.execute(new Philosopher(sticks[0], sticks[i], i));
+            //    R1.start();
+                }
+            }
+            System.out.println("Press 'Enter' to quit");
+    
+            
+        }
+    }
+}
